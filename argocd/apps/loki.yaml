@@ -19,6 +19,8 @@ spec:
           auth_enabled: false
           commonConfig:
             replication_factor: 1
+          storage:
+            type: filesystem
           useTestSchema: true
         singleBinary:
           replicas: 1
@@ -51,6 +53,8 @@ spec:
           enabled: false
         lokiCanary:
           enabled: false
+        test:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -61,4 +65,3 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-
