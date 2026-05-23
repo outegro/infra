@@ -5,3 +5,6 @@ resources:
   - cert-manager.yaml
   - sealed-secrets.yaml
   - vps-cluster-config.yaml
+  - loki.yaml
+  - kube-prometheus-stack.yaml
+  - alloy.yaml
