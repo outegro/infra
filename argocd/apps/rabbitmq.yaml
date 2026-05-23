@@ -14,6 +14,9 @@ spec:
     helm:
       releaseName: rabbitmq
       valuesObject:
+        global:
+          security:
+            allowInsecureImages: true
         image:
           registry: docker.io
           repository: bitnamilegacy/rabbitmq
