@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rabbitmq
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  project: outegro
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: rabbitmq
+    targetRevision: 16.0.14
+    helm:
+      releaseName: rabbitmq
+      valuesObject:
+        auth:
+          username: outegro
+          existingPasswordSecret: rabbitmq-auth
+          existingSecretPasswordKey: rabbitmq-password
+          existingErlangSecret: rabbitmq-erlang-cookie
+          existingSecretErlangKey: rabbitmq-erlang-cookie
+        plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+        replicaCount: 1
+        persistence:
+          enabled: true
+          size: 10Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 1024Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: messaging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -8,3 +8,6 @@ resources:
   - loki.yaml
   - kube-prometheus-stack.yaml
   - alloy.yaml
+  - postgresql.yaml
+  - redis.yaml
+  - rabbitmq.yaml

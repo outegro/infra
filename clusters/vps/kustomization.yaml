@@ -6,3 +6,8 @@ resources:
   - cert-manager/cluster-issuer.yaml
   - argocd/ingress.yaml
   - monitoring/grafana-admin.sealedsecret.yaml
+  - databases/postgresql-auth.sealedsecret.yaml
+  - databases/redis-auth.sealedsecret.yaml
+  - databases/redis-commander.yaml
+  - messaging/rabbitmq-auth.sealedsecret.yaml
+  - messaging/rabbitmq-erlang-cookie.sealedsecret.yaml
