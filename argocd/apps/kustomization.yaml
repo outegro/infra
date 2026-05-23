@@ -4,4 +4,4 @@ resources:
   - project.yaml
   - cert-manager.yaml
   - sealed-secrets.yaml
-
+  - vps-cluster-config.yaml

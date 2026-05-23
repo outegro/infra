@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vps-cluster-config
+  namespace: argocd
+spec:
+  project: outegro
+  source:
+    repoURL: https://github.com/outegro/infra.git
+    targetRevision: master
+    path: clusters/vps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+
