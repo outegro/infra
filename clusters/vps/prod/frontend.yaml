@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: prod-frontend
-          image: ghcr.io/outegro/prod-frontend:sha-9824adccd887df350a796be13688a039ade63424
+          image: ghcr.io/outegro/prod-frontend:sha-c9ef67b97611dbb1e423ee327e1d02fc82de93d2
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
