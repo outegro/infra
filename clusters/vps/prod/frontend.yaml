@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-frontend
+  namespace: prod
+  labels:
+    app.kubernetes.io/name: prod-frontend
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prod-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prod-frontend
+    spec:
+      containers:
+        - name: prod-frontend
+          image: ghcr.io/outegro/prod-frontend:sha-9824adccd887df350a796be13688a039ade63424
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: HOSTNAME
+              value: 0.0.0.0
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              memory: 384Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-frontend
+  namespace: prod
+  labels:
+    app.kubernetes.io/name: prod-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: prod-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-frontend
+  namespace: prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: outegro-dev-tls
+      hosts:
+        - outegro.dev
+  rules:
+    - host: outegro.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prod-frontend
+                port:
+                  name: http

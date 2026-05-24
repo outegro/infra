@@ -11,3 +11,5 @@ resources:
   - databases/redis-commander.yaml
   - messaging/rabbitmq-auth.sealedsecret.yaml
   - messaging/rabbitmq-erlang-cookie.sealedsecret.yaml
+  - prod/frontend.yaml
+  - prod/backend.yaml

@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-backend
+  namespace: prod
+  labels:
+    app.kubernetes.io/name: prod-backend
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prod-backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prod-backend
+    spec:
+      containers:
+        - name: prod-backend
+          image: ghcr.io/outegro/prod-backend:sha-447b57587611d7423d7fb72f072de56a900fb854
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: CORS_ORIGIN
+              value: https://outegro.dev
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              memory: 384Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-backend
+  namespace: prod
+  labels:
+    app.kubernetes.io/name: prod-backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: prod-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-backend
+  namespace: prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: api-outegro-dev-tls
+      hosts:
+        - api.outegro.dev
+  rules:
+    - host: api.outegro.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prod-backend
+                port:
+                  name: http
