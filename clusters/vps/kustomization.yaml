@@ -6,6 +6,7 @@ resources:
   - cert-manager/cluster-issuer.yaml
   - argocd/ingress.yaml
   - monitoring/grafana-admin.sealedsecret.yaml
+  - monitoring/alertmanager-telegram-bot.sealedsecret.yaml
   - databases/postgresql-auth.sealedsecret.yaml
   - databases/redis-auth.sealedsecret.yaml
   - databases/redis-commander.yaml
