@@ -15,6 +15,14 @@ spec:
       releaseName: monitoring
       valuesObject:
         fullnameOverride: monitoring
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeProxy:
+          enabled: false
+        kubeScheduler:
+          enabled: false
         grafana:
           admin:
             existingSecret: grafana-admin
